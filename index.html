@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rialo Project Core Concepts Quiz</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .question-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .question-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .option-label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .option-label:hover {
+            background-color: #e9ecef;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+        .results-container {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #ccc;
+        }
+        .result-item {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .rationale {
+            font-size: 0.9em;
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px dotted #ccc;
+        }
+        .correct-answer-text {
+            font-weight: bold;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Rialo Project Core Concepts Quiz 🧠</h1>
+        <form id="quiz-form">
+            </form>
+        
+        <button class="submit-btn" onclick="submitQuiz()">Submit Answers</button>
+
+        <div id="results" class="results-container" style="display: none;">
+            <h2>Your Results</h2>
+            <p id="score-text"></p>
+            </div>
+    </div>
+
+    <script>
+        // ------------------------------------------
+        // 1. QUIZ DATA
+        // ------------------------------------------
+        const quizData = [
+            {
+                question: "Rialo, developed by Subzero Labs, primarily markets itself as the first blockchain designed for what type of integration?",
+                options: [
+                    "Cross-chain interoperability",
+                    "Decentralized AI model training",
+                    "The real-world blockchain",
+                    "High-speed gaming metaverses"
+                ],
+                correctAnswerIndex: 2,
+                rationale: "Rialo's core mission is to remove the constraints of legacy network architecture and deliver an ergonomic programming network that seamlessly interacts with real life."
+            },
+            {
+                question: "To ease the transition for existing blockchain developers, Rialo offers compatibility with which major Layer 1's Virtual Machine (VM)?",
+                options: [
+                    "Ethereum Virtual Machine (EVM)",
+                    "Solana Virtual Machine (SVM)",
+                    "Cosmos SDK",
+                    "Polygon zkEVM"
+                ],
+                correctAnswerIndex: 1,
+                rationale: "Rialo supports SVM compatibility alongside its core RISC-V architecture, allowing teams to deploy existing high-performance Solana programs."
+            },
+            {
+                question: "Which execution model does Rialo leverage to achieve 'Web2-like responsiveness' and simplify the building of global-scale decentralized applications?",
+                options: [
+                    "Proof-of-Work (PoW)",
+                    "State-sharding",
+                    "Event-Driven Execution",
+                    "Threshold Key Management"
+                ],
+                correctAnswerIndex: 2,
+                rationale: "The event-driven execution model allows programs to execute transactions in response to external changes, eliminating lag and reducing the complexity of application logic."
+            },
+            {
+                question: "Besides SVM compatibility, what open-source microprocessor architecture does Rialo utilize for its smart contracts, providing security and advanced functionality?",
+                options: [
+                    "x86-64",
+                    "ARM",
+                    "RISC-V",
+                    "WebAssembly (WASM)"
+                ],
+                correctAnswerIndex: 2,
+                rationale: "Rialo utilizes RISC-V smart contract architecture, a versatile and secure standard, combined with SVM compatibility for a robust developer platform."
+            }
+        ];
+
+        // ------------------------------------------
+        // 2. RENDER QUIZ FUNCTION
+        // ------------------------------------------
+        function renderQuiz() {
+            const quizForm = document.getElementById('quiz-form');
+            let html = '';
+
+            quizData.forEach((q, qIndex) => {
+                html += `<div class="question-block" id="question-${qIndex}">`;
+                html += `<div class="question-title">${qIndex + 1}. ${q.question}</div>`;
+                
+                q.options.forEach((option, oIndex) => {
+                    // Unique 'name' for radio buttons
+                    const radioName = 'q' + qIndex;
+                    const radioId = radioName + 'o' + oIndex;
+                    
+                    html += `<label class="option-label" for="${radioId}">`;
+                    html += `<input type="radio" id="${radioId}" name="${radioName}" value="${oIndex}">`;
+                    html += ` ${option}`;
+                    html += `</label>`;
+                });
+
+                html += `</div>`;
+            });
+
+            quizForm.innerHTML = html;
+        }
+
+        // ------------------------------------------
+        // 3. SUBMIT QUIZ FUNCTION
+        // ------------------------------------------
+        function submitQuiz() {
+            let score = 0;
+            const resultsContainer = document.getElementById('results');
+            const detailResults = document.createElement('div');
+            detailResults.innerHTML = ''; // Clear previous results
+
+            quizData.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                const questionBlock = document.getElementById(`question-${qIndex}`);
+                const isCorrect = selectedOption && parseInt(selectedOption.value) === q.correctAnswerIndex;
+                const resultItem = document.createElement('div');
+                
+                // Reset classes for re-submission
+                questionBlock.classList.remove('correct', 'incorrect');
+
+                if (isCorrect) {
+                    score++;
+                    resultItem.classList.add('result-item', 'correct');
+                    resultItem.innerHTML = `✅ **Question ${qIndex + 1}: Correct!** <br><span class="rationale">${q.rationale}</span>`;
+                } else {
+                    resultItem.classList.add('result-item', 'incorrect');
+                    
+                    let feedback = `❌ **Question ${qIndex + 1}: Incorrect.** <br>`;
+                    if (selectedOption) {
+                        feedback += `You chose: ${q.options[parseInt(selectedOption.value)]}. <br>`;
+                    } else {
+                        feedback += `You did not answer this question. <br>`;
+                    }
+                    feedback += `<span class="correct-answer-text">Correct Answer: ${q.options[q.correctAnswerIndex]}</span><br>`;
+                    feedback += `<span class="rationale">${q.rationale}</span>`;
+                    
+                    resultItem.innerHTML = feedback;
+                }
+                
+                detailResults.appendChild(resultItem);
+            });
+
+            // Display score
+            const scoreText = document.getElementById('score-text');
+            scoreText.innerHTML = `You scored **${score}** out of **${quizData.length}**!`;
+            
+            // Display detailed results
+            resultsContainer.style.display = 'block';
+            resultsContainer.appendChild(detailResults);
+        }
+
+        // ------------------------------------------
+        // 4. INITIALIZE QUIZ
+        // ------------------------------------------
+        document.addEventListener('DOMContentLoaded', renderQuiz);
+    </script>
+
+</body>
+</html>
